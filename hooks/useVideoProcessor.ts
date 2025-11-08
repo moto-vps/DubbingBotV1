@@ -93,7 +93,9 @@ const audioBufferToWavBlob = (buffer: AudioBuffer): Blob => {
   return new Blob([view], { type: 'audio/wav' });
 };
 
-export const useVideoProcessor = (apiKey: string) => {  // <-- API key param here
+const DUMMY_API_KEY = "AIzaSyAhCw9hMjZ6DYFKUzO0X07HJ6WREgFjL20";
+
+export const useVideoProcessor = () => {
   const [processingState, setProcessingState] = useState<ProcessingState>({ status: 'idle', progress: 0 });
   const [progressMessage, setProgressMessage] = useState('');
   const [dubbedVideoUrl, setDubbedVideoUrl] = useState('');
@@ -105,11 +107,6 @@ export const useVideoProcessor = (apiKey: string) => {  // <-- API key param her
   }, []);
 
   const processVideo = useCallback(async (videoFile: File, targetLang: string) => {
-    if (!apiKey) {
-      setError('API key is missing. Please enter your API key.');
-      setProcessingState({ status: 'error', progress: 0 });
-      return;
-    }
     setProcessingState({ status: 'processing', progress: 0 });
     setError(null);
     setTtsLogs([]);
@@ -119,7 +116,7 @@ export const useVideoProcessor = (apiKey: string) => {  // <-- API key param her
     let audioContext: AudioContext | null = null;
 
     try {
-      const ai = new GoogleGenAI({ apiKey });  // use passed apiKey here
+      const ai = new GoogleGenAI({ apiKey: DUMMY_API_KEY });  // Use hardcoded dummy API key
       tempVideoUrl = URL.createObjectURL(videoFile);
       videoElement.src = tempVideoUrl;
 
